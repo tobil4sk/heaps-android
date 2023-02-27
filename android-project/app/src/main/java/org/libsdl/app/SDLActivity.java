@@ -311,7 +311,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mNextNativeState = NativeState.INIT;
         mCurrentNativeState = NativeState.INIT;
     }
-    
+
     protected SDLSurface createSDLSurface(Context context) {
         return new SDLSurface(context);
     }
@@ -588,17 +588,30 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             mHIDDeviceManager = null;
         }
 
+
+        Log.v(TAG, "onDestroy() - releasing audio manager");
+
+
         SDLAudioManager.release(this);
 
+
+        Log.v(TAG, "onDestroy() - released ");
+
         if (SDLActivity.mBrokenLibraries) {
+
+           Log.v(TAG, "onDestroy() - broken libraries ");
            super.onDestroy();
            return;
         }
 
         if (SDLActivity.mSDLThread != null) {
 
+           Log.v(TAG, "onDestroy() - sdl thread is not null. sending native quit ");
+
             // Send Quit event to "SDLThread" thread
             SDLActivity.nativeSendQuit();
+
+            Log.v(TAG, "onDestroy() - sent native quit. Joining main thread");
 
             // Wait for "SDLThread" thread to end
             try {
@@ -608,9 +621,17 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             }
         }
 
+        Log.v(TAG, "onDestroy() - running native quit ");
+
         SDLActivity.nativeQuit();
 
+
+           Log.v(TAG, "onDestroy() - ran native quit ");
+
         super.onDestroy();
+
+
+           Log.v(TAG, "onDestroy() - called super.onDestroy ");
     }
 
     @Override
